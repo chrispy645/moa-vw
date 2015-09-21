@@ -4,6 +4,7 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import vw.VW;
 import vw.exception.IllegalVWInput;
 
 import java.io.*;

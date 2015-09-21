@@ -19,6 +19,12 @@ public class TestDiabetesNumeric {
 			System.out.println( learner.learn(inst) );
 		}
 		
+		System.out.println("-----");
+		
+		System.out.println( learner.predict( ArffToVW.process(data.get(0)) ) );
+		
+		learner.close();
+		
 	}
 
 }

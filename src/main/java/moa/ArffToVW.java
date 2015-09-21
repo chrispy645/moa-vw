@@ -19,7 +19,16 @@ public class ArffToVW {
 		// class label | feature_name:val nominal_feature ...
 		StringBuilder sb = new StringBuilder();
 		if( x.classAttribute().isNominal() ) {
-			sb.append( ((int) (x.classValue()+1)) + " | " );
+			if( x.numClasses() > 2 ) {
+				sb.append( ((int) (x.classValue()+1)) + " | " );
+			} else if( x.numClasses() == 2 ) {
+				// turn {0,1} into {-1,1}
+				if( x.classValue() == 0.0 ) {
+					sb.append("-1 | ");
+				} else {
+					sb.append("1 | ");
+				}
+			}
 		} else {
 			sb.append( x.classValue() + " | ");
 		}
@@ -45,11 +54,11 @@ public class ArffToVW {
 		bw.close();
 	}
 	
-	public static void main(String[] args) throws Exception {
+	public static void convertArff(String filename) throws Exception {
 		
 		// for now we assume that if the dataset has nominal
 		// attributes then they are binary
-		DataSource ds = new DataSource("datasets/diabetes_numeric.arff");
+		DataSource ds = new DataSource(filename);
 		Instances instances = ds.getDataSet();
 		instances.setClassIndex( instances.numAttributes() - 1);
 		StringBuilder sb = new StringBuilder();
@@ -57,9 +66,13 @@ public class ArffToVW {
 			sb.append( process(inst) );
 			sb.append("\n");
 		}
-		writeStringToFile(sb.toString(), "datasets/diabetes_numeric.txt");
-		
-		
+		writeStringToFile(sb.toString(), filename.replace(".arff", ".txt"));
+	}
+	
+	public static void main(String[] args) throws Exception {
+		convertArff("datasets/diabetes_numeric.arff");
+		convertArff("datasets/iris.arff");
+		convertArff("datasets/iris_2class.arff");
 	}
 
 }
