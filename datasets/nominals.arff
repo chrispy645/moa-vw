@@ -1,0 +1,9 @@
+@relation nominals
+@attribute x1 numeric
+@attribute x2 {0,1}
+@attribute x3 {yes,no,maybe}
+@attribute class {true,false}
+@data
+100,0,no,true
+200,1,maybe,false
+1.0,0,yes,true

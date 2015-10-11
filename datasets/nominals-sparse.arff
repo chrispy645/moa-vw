@@ -1,0 +1,11 @@
+@relation nominals-weka.filters.unsupervised.instance.NonSparseToSparse
+
+@attribute x1 numeric
+@attribute x2 {0,1}
+@attribute x3 {yes,no,maybe}
+@attribute class {true,false}
+
+@data
+{0 100,2 no}
+{0 200,1 1,2 maybe,3 false}
+{0 1}
