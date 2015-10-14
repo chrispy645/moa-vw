@@ -1,4 +1,6 @@
 #!/bin/bash
 
 ant clean
-ant exejar -Dpackage=moa-vw
+#ant -noclasspath -lib $MOA_EXP_HOME/moa.jar:$WEKA_HOME/weka.jar exejar -Dpackage=moa-vw
+
+ant -noclasspath -lib moa-modifications/src/main/java/:$MOA_HOME/moa.jar:$WEKA_HOME/weka.jar exejar -Dpackage=moa-vw
