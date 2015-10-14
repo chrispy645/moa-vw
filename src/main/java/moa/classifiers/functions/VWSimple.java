@@ -5,6 +5,7 @@ import moa.classifiers.AbstractClassifier;
 import moa.core.Measurement;
 import moa.options.FlagOption;
 import moa.options.FloatOption;
+import moa.options.IntOption;
 import moa.options.MultiChoiceOption;
 import vw.VW;
 import weka.core.Instance;
@@ -37,6 +38,15 @@ public class VWSimple extends AbstractClassifier {
 	private boolean m_quadraticFeatures = false;
 	public FlagOption m_quadraticFeaturesOption = new FlagOption("quadraticFeatures", 'q', "Compute cross-features?");
 	
+	private boolean m_cubicFeatures = false;
+	public FlagOption m_cubicFeaturesOption = new FlagOption("cubicFeatures", 'c', "Compute cubic features?");
+	
+	private int m_numBits = 0;
+	public IntOption m_numBitsOption = new IntOption("numBits", 'b', "Number of bits for hashing function", 18, 0, 18);
+	
+	private boolean m_meta = false;
+	public FlagOption m_metaOption = new FlagOption("meta", 'm', "Use meta ARFF file?");
+	
 	private String m_modelDesc = null;
 	
 	public VW getVw() {
@@ -54,6 +64,14 @@ public class VWSimple extends AbstractClassifier {
 	
 	public boolean getQuadraticFeatures() {
 		return m_quadraticFeatures;
+	}
+	
+	public void setCubicFeatures(boolean b) {
+		m_cubicFeatures = b;
+	}
+	
+	public boolean getCubicFeatures() {
+		return m_cubicFeatures;
 	}
 	
 	public void setLossFunction(String s) {
@@ -88,6 +106,22 @@ public class VWSimple extends AbstractClassifier {
 		m_l2 = l2;
 	}
 	
+	public int getNumBits() {
+		return m_numBits;
+	}
+	
+	public void setNumBits(int n) {
+		m_numBits = n;
+	}
+	
+	public boolean getMeta() {
+		return m_meta;
+	}
+	
+	public void setMeta(boolean b) {
+		m_meta = b;
+	}
+	
 	public boolean getDebug() {
 		return m_debug;
 	}
@@ -108,11 +142,15 @@ public class VWSimple extends AbstractClassifier {
 			sb.append("--quiet" + " ");
 		}
 		
+		sb.append("--bit_precision " + getNumBits() + " ");
 		sb.append("--l1 " + getL1() + " ");
 		sb.append("--l2 " + getL2() + " ");
-			
+		
 		if( getQuadraticFeatures() ) {
-			sb.append("-q ::" + " ");
+			sb.append("--quadratic ::" + " ");
+		}
+		if( getCubicFeatures() ) {
+			sb.append("--cubic :::" + " ");
 		}
 		
 		if( inst.numClasses() > 2) {
@@ -130,11 +168,12 @@ public class VWSimple extends AbstractClassifier {
 		}
 		
 		m_modelDesc = sb.toString();
-		System.out.println("VW config: " + m_modelDesc);
+		System.err.println("VW config: " + m_modelDesc);
 		m_vw = new VW(m_modelDesc);
 	}
 	
-	public void close() {
+	@Override
+	public void onClassifierFinished() {
 		if(m_vw != null) {
 			m_vw.close();
 		}
@@ -149,8 +188,9 @@ public class VWSimple extends AbstractClassifier {
 			m_hasStarted = true;
 		}
 		try {
-			double pred = m_vw.predict( ArffToVW.process(inst) );
-			if(m_debug) System.err.println( ArffToVW.process(inst) );	
+			double pred = 0;
+			if( !getMeta() ) pred = m_vw.predict( ArffToVW.process(inst) );
+			else pred = m_vw.predict( inst.attribute(0).value(0) );
 
 			if( inst.numClasses() == 2 ) {
 				if(m_debug) System.err.print("pred = " + pred + ", ");
@@ -175,7 +215,10 @@ public class VWSimple extends AbstractClassifier {
 				return dist;
 				
 			} else {
-				throw new Exception("Number of classes < 2!");
+				// this is a regression
+				double[] dist = new double[1];
+				dist[0] = pred;
+				return dist;
 			}
 		} catch(Exception ex) {
 			ex.printStackTrace();
@@ -191,6 +234,9 @@ public class VWSimple extends AbstractClassifier {
 		setL1( m_l1Option.getValue() );
 		setL2( m_l2Option.getValue() );
 		setQuadraticFeatures( m_quadraticFeaturesOption.isSet() );
+		setCubicFeatures( m_cubicFeaturesOption.isSet() );
+		setNumBits( m_numBitsOption.getValue() );
+		setMeta( m_metaOption.isSet() );
 		setDebug( m_debugOption.isSet() );
 	}
 
@@ -201,7 +247,8 @@ public class VWSimple extends AbstractClassifier {
 			m_hasStarted = true;
 		}
 		try {
-			m_vw.learn( ArffToVW.process(inst) );
+			if( !getMeta() ) m_vw.learn( ArffToVW.process(inst) );
+			else m_vw.learn( inst.attribute(0).value(0) );
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
@@ -209,12 +256,9 @@ public class VWSimple extends AbstractClassifier {
 
 	@Override
 	protected Measurement[] getModelMeasurementsImpl() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void getModelDescription(StringBuilder out, int indent) {
-		// TODO Auto-generated method stub
-	}
+	public void getModelDescription(StringBuilder out, int indent) { }
 }

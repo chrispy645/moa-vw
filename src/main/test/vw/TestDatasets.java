@@ -42,6 +42,7 @@ public class TestDatasets {
 		}
 		//double numCorrect = getPercentageCorrect(data, vw);
 		//System.out.println("% correct on training data:" + numCorrect);
+		vw.onClassifierFinished();
 		
 	}
 	
@@ -67,7 +68,7 @@ public class TestDatasets {
 		double numCorrect = getPercentageCorrect(data, vw);
 		System.out.println("Percent correct = " + numCorrect*100);
 		assertEquals(numCorrect > 0.95, true);
-		vw.close();
+		vw.onClassifierFinished();
 	}
 	
 	/**
@@ -92,7 +93,7 @@ public class TestDatasets {
 		double numCorrect = getPercentageCorrect(data, vw);
 		System.out.println("Percent correct = " + numCorrect*100);
 		assertEquals(1.0, numCorrect, 1e-5);	
-		vw.close();
+		vw.onClassifierFinished();
 	}
 
 }
