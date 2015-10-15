@@ -1,4 +1,4 @@
-package vw;
+package moavw;
 
 import weka.core.Attribute;
 import moa.core.InstancesHeader;

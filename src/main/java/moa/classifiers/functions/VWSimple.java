@@ -1,6 +1,6 @@
 package moa.classifiers.functions;
 
-import moa.ArffToVW;
+import moavw.ArffToVW;
 import moa.classifiers.AbstractClassifier;
 import moa.core.Measurement;
 import moa.options.FlagOption;
@@ -174,6 +174,7 @@ public class VWSimple extends AbstractClassifier {
 	
 	@Override
 	public void onClassifierFinished() {
+		System.err.println("graceful closing...");
 		if(m_vw != null) {
 			m_vw.close();
 		}

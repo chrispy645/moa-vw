@@ -1,4 +1,4 @@
-package vw;
+package moavw;
 
 import java.util.Random;
 

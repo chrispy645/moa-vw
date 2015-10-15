@@ -1,4 +1,4 @@
-package moa;
+package moavw;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -44,7 +44,9 @@ public class ArffToVW {
 			for(int i = 0; i < x.numAttributes(); i++) {
 				if( i == x.classIndex() ) continue;
 				if( x.attribute(i).isNumeric() ) {
-					sb.append( x.attribute(i).name() + ":" + x.value(i) + " ");
+					if(x.value(i) != 0.0) {
+						sb.append( x.attribute(i).name() + ":" + x.value(i) + " ");
+					}
 				} else if (x.attribute(i).isNominal() ) {
 					if( (int)x.value(i) != 0 ) {
 						String name = "is_" + x.attribute(i).name() + "_" + ((int)x.value(i)) + " ";
