@@ -1,6 +1,9 @@
 package moavw;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -19,25 +22,44 @@ public class TestMetaArff {
 	@Test
 	public void test() throws Exception {
 		
-		VWSimple vw = new VWSimple();
-		vw.prepareForUse();
-		vw.setMeta(true);
+		VWSimple vwMeta = new VWSimple();
+		vwMeta.prepareForUse();
+		//vwMeta.setLossFunction("logistic");
+		vwMeta.setMeta(true);
 		
-		MetaArffFileStream stream = new MetaArffFileStream("datasets/iris.meta.arff", -1);
-		ArffFileStream stream2 = new ArffFileStream("datasets/iris.arff", -1);
+		VWSimple vwDense = new VWSimple();
+		vwDense.prepareForUse();
+		//vwDense.setLossFunction("logistic");
+		vwDense.setMeta(false);
 		
-		stream.prepareForUse();
-		stream2.prepareForUse();
-		int c = 1;
-		while( stream2.hasMoreInstances() ) {
-			Instance metaInst = stream.nextInstance();
-			Instance normInst = stream2.nextInstance();
-			System.out.println(metaInst);
+		MetaArffFileStream metaStream = new MetaArffFileStream("datasets/iris.meta.arff", -1);
+		ArffFileStream denseStream = new ArffFileStream("datasets/iris.arff", -1);
+		
+		//MetaArffFileStream metaStream = new MetaArffFileStream("/tmp/rbf100k_meta.arff", -1);
+		//ArffFileStream denseStream = new ArffFileStream("/tmp/rbf100k.arff", -1);
+		
+		//metaStream.prepareForUse();
+		//denseStream.prepareForUse();
+		int c = 0;
+		while( metaStream.hasMoreInstances() ) {
 			c++;
-			System.out.println(ArffToVW.process(normInst));
+			//System.out.println("iter " + c);
 			
-			assertEquals( metaInst.stringValue(0), ArffToVW.process(normInst) );
-			//vw.trainOnInstance(metaInst);
+			Instance metaInst = metaStream.nextInstance();
+			Instance denseInst = denseStream.nextInstance();
+			//System.out.println("metaInst: " + metaInst.stringValue(0).replace("'", ""));
+			//System.out.println("densInst: " + ArffToVW.process(denseInst));
+			
+			assertEquals( metaInst.stringValue(0).replace("'", ""), ArffToVW.process(denseInst) );
+			//assertEquals( metaInst.toString(), ArffToVW.process(normInst) );			
+			
+			double[] densePred = vwDense.getVotesForInstance(denseInst);
+			double[] metaPred = vwMeta.getVotesForInstance(metaInst);			
+			assertTrue( Arrays.equals(densePred, metaPred) );
+			
+			vwDense.trainOnInstance(denseInst);
+			vwMeta.trainOnInstance(metaInst);
+		
 		}
 		
 	}

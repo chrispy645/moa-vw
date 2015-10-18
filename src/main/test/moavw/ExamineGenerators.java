@@ -24,7 +24,6 @@ public class ExamineGenerators {
 	public static void summariseGenerator(InstanceStream gen) throws Exception {
 		((AbstractOptionHandler)gen).prepareForUse();		
 		InstancesHeader hdr = gen.getHeader();
-		System.out.println(hdr.relationName());
 		int numNumeric = 0;
 		int numNominal = 0;
 		int numClasses = hdr.numClasses();
@@ -37,10 +36,8 @@ public class ExamineGenerators {
 			} else {
 				throw new Exception("Unknown attr type: " + type);
 			}
-		}
-		System.out.println("  Numeric: " + numNumeric);
-		System.out.println("  Nominal: " + numNominal);
-		System.out.println("  Num classes: " + numClasses);
+		}		
+		System.out.println( hdr.relationName() + " & " + numNumeric + " & " + numNominal + " & " + numClasses);
 	}
 	
 	public static void main(String[] args) throws Exception {

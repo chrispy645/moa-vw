@@ -39,6 +39,7 @@ import moa.options.FileOption;
 import moa.options.FloatOption;
 import moa.options.IntOption;
 import moa.streams.InstanceStream;
+import moa.streams.MetaArffFileStream;
 import weka.core.Instance;
 import weka.core.Utils;
 
@@ -184,11 +185,22 @@ public class EvaluatePrequential extends MainTask {
         long evaluateStartTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
         long lastEvaluateStartTime = evaluateStartTime;
         double RAMHours = 0.0;
+        System.err.println("using custom preq eval...");
         while (stream.hasMoreInstances()
                 && ((maxInstances < 0) || (instancesProcessed < maxInstances))
                 && ((maxSeconds < 0) || (secondsElapsed < maxSeconds))) {
-            Instance trainInst = stream.nextInstance();
-            Instance testInst = (Instance) trainInst.copy();
+        	
+        	Instance trainInst = null;
+        	Instance testInst = null;
+        	if(stream instanceof MetaArffFileStream) {
+        		trainInst = ((MetaArffFileStream)stream).nextInstance();
+        		//System.err.println(trainInst);
+        		testInst = (Instance) trainInst.copy();
+        	} else {
+        		trainInst = stream.nextInstance();
+        		testInst = (Instance) trainInst.copy();
+        	}
+
             if (testInst.classIsMissing() == false){
                 // Added for semisupervised setting: test only if we have the label
                 double[] prediction = learner.getVotesForInstance(testInst);
@@ -200,8 +212,25 @@ public class EvaluatePrequential extends MainTask {
             }
             learner.trainOnInstance(trainInst);
             instancesProcessed++;
-            if (instancesProcessed % this.sampleFrequencyOption.getValue() == 0
-                    || stream.hasMoreInstances() == false) {
+            
+            /*
+             * HACK: For MetaArffFileStream, calling hasMoreInstances() will load
+             * an instance in. So to check if the stream is "empty or not", you
+             * must see if nextInstance == null.
+             */
+            
+            boolean eval = false;
+            if(stream instanceof MetaArffFileStream) {
+            	if (instancesProcessed % this.sampleFrequencyOption.getValue() == 0) {
+            		eval = true;
+            	}
+            } else {
+            	if (instancesProcessed % this.sampleFrequencyOption.getValue() == 0 || stream.hasMoreInstances() == false) {
+            		eval = true;
+            	}
+            }
+            
+            if (eval) {
                 long evaluateTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
                 double time = TimingUtils.nanoTimeToSeconds(evaluateTime - evaluateStartTime);
                 double timeIncrement = TimingUtils.nanoTimeToSeconds(evaluateTime - lastEvaluateStartTime);
@@ -257,6 +286,42 @@ public class EvaluatePrequential extends MainTask {
                         - evaluateStartTime);
             }
         }
+        
+        if(stream instanceof MetaArffFileStream) {
+            long evaluateTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
+            double time = TimingUtils.nanoTimeToSeconds(evaluateTime - evaluateStartTime);
+            double timeIncrement = TimingUtils.nanoTimeToSeconds(evaluateTime - lastEvaluateStartTime);
+            double RAMHoursIncrement = learner.measureByteSize() / (1024.0 * 1024.0 * 1024.0); //GBs
+            RAMHoursIncrement *= (timeIncrement / 3600.0); //Hours
+            RAMHours += RAMHoursIncrement;
+            lastEvaluateStartTime = evaluateTime;
+            learningCurve.insertEntry(new LearningEvaluation(
+                    new Measurement[]{
+                        new Measurement(
+                        "learning evaluation instances",
+                        instancesProcessed),
+                        new Measurement(
+                        "evaluation time ("
+                        + (preciseCPUTiming ? "cpu "
+                        : "") + "seconds)",
+                        time),
+                        new Measurement(
+                        "model cost (RAM-Hours)",
+                        RAMHours)
+                    },
+                    evaluator, learner));
+
+            if (immediateResultStream != null) {
+                if (firstDump) {
+                    immediateResultStream.println(learningCurve.headerToString());
+                    firstDump = false;
+                }
+                immediateResultStream.println(learningCurve.entryToString(learningCurve.numEntries() - 1));
+                immediateResultStream.flush();
+            }
+        }
+        
+        
         if (immediateResultStream != null) {
             immediateResultStream.close();
         }

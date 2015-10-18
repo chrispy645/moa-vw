@@ -1,0 +1,160 @@
+---
+title: "VW for MOA"
+author: "Christopher J. Beckham"
+output: beamer_presentation
+header-includes:
+  - \usepackage{graphicx}
+---
+
+## Vowpal Wabbit
+
+![fudd](fudd.jpg)
+
+## Vowpal Wabbit
+
+* Online learning library written in C++
+* Learn linear classifiers
+* Large datasets with extremely large feature space
+* Utilises "hashing trick""
+
+## Hashing trick
+
+* Assume $p$ attributes
+* Hash function that maps $p$ dimensions to $m = 2^{b}$
+    * $m$ may be << $p$
+* Don't need to know how many attributes there are in the data
+* Dimensionality reduction
+* Hashing collisions (problem?)
+
+## MoaVW
+
+\begin{center}
+\includegraphics{../images/gui}
+\end{center}
+
+## Options
+
+* Loss function (`-l <squared,logistic,hinge,quantile>`)
+    * Squared error (regression)
+        * $\ell(\hat{y},y) = (\hat{y} - y)^2$
+    * Logistic loss (classification + probabilistic)
+        * $\ell(\hat{y},y) = y log(\hat{y}) + (1-y) log(1 - \hat{y})$
+    * Hinge loss (classification + hard)
+        * $\ell(\hat{y},y) = max(0, 1 - y\hat{y})$
+    * Quantile
+    
+## Options
+
+* $\ell_{1}$ and $\ell_{2}$ penalty (`-1 <float>` and `-2 <float>`)
+* Multi-class option - one-against-all or error-correcting tournament (`-M <oaa|ect>`)
+* Quadratic features - compute $x_{i}x_{j}$ where $i < j$ (`-q`)
+* Cubic features - compute $x_{i}x_{j}x_{k}$ where $i < j < k$ (`-c`)
+* Number of bits in hashing function, $b$ (`-b <1,2,...,18>`)
+
+## VW format
+
+```
+-1 | x1:5.0 x2:8.5 x10:10.7 rainy windy
+1 | x5:0.5 x7:12.3 x8:9.0 sunny
+...
+```
+
+## ARFF format
+
+```
+@relation some_dataset
+@attribute x1 numeric
+@attribute x2 numeric
+...
+@attribute x10 numeric
+@attribute rainy {0,1}
+@attribute windy {0,1}
+@attribute sunny {0,1}
+@class {"a", "b"}
+@data
+5.0,8.5,0,0,0,0,0,0,0,10.7,1,1,0,"a"
+0,0,0,0,5.0,0,12.3,9.0,0,0,0,0,1,"b"
+...
+```
+
+## Experiments
+
+* Compare VW with SGDMulticlass
+* Data generators
+    * Agrawal, hyperplane, LED, RBF, RTG, SEA, waveform
+    * Default settings
+* For VW, vary $b$ - i.e., $b \in \{1, 3, 6, 9, 12, 15, 18\}$
+* Use hinge loss function with learning rate $\alpha = 0.5$ for both
+
+## Generators
+
+\begin{table}[H]
+\centering
+\label{tab:generators}
+\begin{tabular}{|c|c|c|c|}
+\hline
+ Dataset & \# numeric & \# nominal & \# classes \\ \hline
+ Agrawal & 6 & 4 & 2 \\ \hline
+ Hyperplane & 10 & 1 & 2 \\ \hline
+ LED & 0 & 25 & 10 \\ \hline
+ RandomRBF & 10 & 1 & 2 \\ \hline
+ RandomTree & 5 & 6 & 2 \\ \hline
+ SEA & 3 & 1 & 2 \\ \hline
+ STAGGER & 0 & 4 & 2 \\ \hline
+ Waveform & 21 & 1 & 3 \\ \hline
+\end{tabular}
+\end{table}
+
+## Results
+
+\centering
+\includegraphics[page=1]{/Users/cjb60/Dropbox/comp523/assignment2/plots-neat.pdf}
+
+## Results
+
+\centering
+\includegraphics[page=2]{/Users/cjb60/Dropbox/comp523/assignment2/plots-neat.pdf}
+
+## Results
+
+* Generally, lower $b$ results in decreased accuracy (more collisions)
+* VW decomposes a multi-class problem into a set of binary ones
+    * More model capacity
+* Conclusion: the wrapper works!
+
+## Caveats
+
+* MOA not suitable for extremely large number of features
+
+* ```
+@attribute x1 numeric
+@attribute x2 numeric
+@attribute x3 numeric
+...
+@attribute x100000 numeric
+```
+
+* Easy (but rather peculiar) fix: use string attribute + class attribute
+
+## "Meta ARFF"
+
+* ```
+@attribute vw_format string
+@attribute class {"a", "b"}
+@data
+"-1 | x1:5.0 x2:8.5 x10:10.7 rainy windy","a"
+"1 | x5:0.5 x7:12.3 x8:9.0 sunny","b"
+```
+* Measure memory/time with 100k attributes (50% always zero)
+
+## Results
+
+\includegraphics{/Users/cjb60/Dropbox/comp523/assignment2/mem-and-time.pdf}
+
+## Conclusion
+
+* VW wrapper works, and it's fast
+* Meta ARFF is "hacky"
+    * Pre-release MOA might have a solution to header issue
+    * http://groups.google.com/forum/#!topic/moa-users/tV4biI1Q8QU]
+* Github: https://github.com/chrispy645/moa-vw

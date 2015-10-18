@@ -190,8 +190,13 @@ public class VWSimple extends AbstractClassifier {
 		}
 		try {
 			double pred = 0;
-			if( !getMeta() ) pred = m_vw.predict( ArffToVW.process(inst) );
-			else pred = m_vw.predict( inst.attribute(0).value(0) );
+			if( !getMeta() ) {
+				pred = m_vw.predict( ArffToVW.process(inst) );
+			}
+			else {
+				//pred = m_vw.predict( inst.attribute(0).value(0) );
+				pred = m_vw.predict( inst.toString(0).replace("'", "") );
+			}
 
 			if( inst.numClasses() == 2 ) {
 				if(m_debug) System.err.print("pred = " + pred + ", ");
@@ -248,8 +253,14 @@ public class VWSimple extends AbstractClassifier {
 			m_hasStarted = true;
 		}
 		try {
-			if( !getMeta() ) m_vw.learn( ArffToVW.process(inst) );
-			else m_vw.learn( inst.attribute(0).value(0) );
+			if( !getMeta() ) {
+				m_vw.learn( ArffToVW.process(inst) );
+			}
+			else {
+				//System.err.println( inst.toString(0).replace("'", "") );
+				//System.err.println("    " + inst.attribute(0).value(0) );
+				m_vw.learn( inst.toString(0).replace("'", "") );
+			}
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
