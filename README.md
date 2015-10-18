@@ -37,3 +37,5 @@ through the dataset or VW's native format.
 
 * Prequential evaluation is currently only supported with `VWSimple`. The reason for this is that the VW object in Java needs
 to be gracefully shut down, and this is only implemented in the prequential evaluation class.
+
+* Due to the ARFF format, this wrapper is probably not ideal for extremely large feature spaces. The wrapper does have a "meta" option but this is a bit of a hack, and the pre-release version of MOA might already have something that is better.
