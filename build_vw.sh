@@ -9,10 +9,9 @@ git clone https://github.com/JohnLangford/vowpal_wabbit.git
 cd vowpal_wabbit
 echo "resetting to commit 3c2aa55e74d2f9b6ffeca7455f95775264b92bb7 (new version not supported yet)..."
 git reset --hard 3c2aa55e74d2f9b6ffeca7455f95775264b92bb7
-cd vw_test
+cd java
 echo "build JNI lib..."
 make
-cp target/vw_jni.lib
 
 popd
 

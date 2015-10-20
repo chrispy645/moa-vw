@@ -151,6 +151,10 @@ header-includes:
 
 \includegraphics{/Users/cjb60/Dropbox/comp523/assignment2/mem-and-time.pdf}
 
+## Results
+
+\includegraphics{../images/profiling.png}
+
 ## Conclusion
 
 * VW wrapper works, and it's fast
