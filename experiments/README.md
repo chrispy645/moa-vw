@@ -1,3 +1,6 @@
 ## Experiments
 
-To reproduce the experiments run on the data generators, as presented in the provided tech report, run the script `run-datasets.sh`. Make sure that it is run from this directory, and that the environment variable `$MOA_HOME` is set to the directory where `moa.jar` is located. When this has completed, run `RScript plot-datasets.R` (requires R to be installed) and this will output a .pdf in the directory with the learning curves.
+* The `acc` folder is for reproducing the figures in the tech report that show the accuracy and time plots for SGDMultiClass and VW.
+* The `mem` folder is for reproducing the figure that compares the time/memory usage for meta/dense/sparse ARFFs.
+
+These scripts require R to be installed (more specifically, `RScript` should be in the `$PATH` variable), and require `$MOA_HOME` and `$WEKA_HOME` to be set.
