@@ -10,6 +10,11 @@ import moa.options.MultiChoiceOption;
 import vw.VW;
 import weka.core.Instance;
 
+/**
+ * A wrapper for VW that implements a small subset of
+ * its features, hence the name "VWSimple".
+ * @author cjb60
+ */
 public class VWSimple extends AbstractClassifier {
 	
 	private static final long serialVersionUID = -1574850758865399839L;
@@ -154,7 +159,6 @@ public class VWSimple extends AbstractClassifier {
 		}
 		
 		if( inst.numClasses() > 2) {
-			// TODO: what about tournament?
 			sb.append("--" + getMultiClassMode() + " " + inst.numClasses() + " ");
 		} else {
 			//sb.append("--binary ");
@@ -182,8 +186,6 @@ public class VWSimple extends AbstractClassifier {
 
 	@Override
 	public double[] getVotesForInstance(Instance inst) {
-		// TODO:
-		// http://stats.stackexchange.com/questions/103857/how-to-get-confidence-on-classification-predictions-with-multi-class-vowpal-wabb
 		if( !m_hasStarted ) {
 			prepareVw(inst);
 			m_hasStarted = true;

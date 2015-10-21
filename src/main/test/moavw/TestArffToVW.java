@@ -8,6 +8,11 @@ import org.junit.Test;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
+/**
+ * Class to test if ARFF instances are being converted
+ * to VW instances (strings) correctly on a simple dataset.
+ * @author cjb60
+ */
 public class TestArffToVW {
 	
 	public static final String[] answers = new String[] {
@@ -34,6 +39,11 @@ public class TestArffToVW {
 		}
 	}
 	
+	/**
+	 * Test to see if ArffToVW can correctly convert a (very simple)
+	 * sparse dataset with both nominal and numeric attributes.
+	 * @throws Exception
+	 */
 	@Test
 	public void testNominalSparse() throws Exception {
 		System.out.println("testNominalSparse()");

@@ -28,6 +28,12 @@ public class TestDatasets {
 		return numCorrect;
 	}
 	
+	/**
+	 * Test diabetes dataset. No explicit test for this
+	 * one, apart from the fact that it should not throw
+	 * an exception.
+	 * @throws Exception
+	 */
 	@Test
 	public void testDiabetesNumeric() throws Exception {
 		System.out.println("testDiabetesNumeric()");

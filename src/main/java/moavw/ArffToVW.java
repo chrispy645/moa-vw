@@ -82,10 +82,12 @@ public class ArffToVW {
 		bw.close();
 	}
 	
+	/**
+	 * Convert an ARFF file to a VW file in the same directory
+	 * @param filename the filename of the ARFF file
+	 * @throws Exception
+	 */
 	public static void convertArff(String filename) throws Exception {
-		
-		// for now we assume that if the dataset has nominal
-		// attributes then they are binary
 		DataSource ds = new DataSource(filename);
 		Instances instances = ds.getDataSet();
 		instances.setClassIndex( instances.numAttributes() - 1);
@@ -98,9 +100,9 @@ public class ArffToVW {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		convertArff("datasets/diabetes_numeric.arff");
-		convertArff("datasets/iris.arff");
-		convertArff("datasets/iris_2class.arff");
+		//convertArff("datasets/diabetes_numeric.arff");
+		//convertArff("datasets/iris.arff");
+		//convertArff("datasets/iris_2class.arff");
 	}
 
 }

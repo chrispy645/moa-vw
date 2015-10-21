@@ -1,6 +1,6 @@
 ---
-title: "VW for MOA"
-author: "Christopher J. Beckham"
+title: "Vowpal Wabbit for MOA"
+author: "Christopher Beckham"
 output: beamer_presentation
 header-includes:
   - \usepackage{graphicx}
@@ -10,18 +10,18 @@ header-includes:
 
 ![fudd](fudd.jpg)
 
-## Vowpal Wabbit
+## VW
 
 * Online learning library written in C++
 * Learn linear classifiers
+    * f(x) = wx + b
+    * Stochastic gradient descent
 * Large datasets with extremely large feature space
 * Utilises "hashing trick""
 
 ## Hashing trick
 
-* Assume $p$ attributes
-* Hash function that maps $p$ dimensions to $m = 2^{b}$
-    * $m$ may be << $p$
+* Hash function that maps $p$ names/indices to $0, \dots, 2^{b}-1$
 * Don't need to know how many attributes there are in the data
 * Dimensionality reduction
 * Hashing collisions (problem?)
@@ -108,11 +108,6 @@ header-includes:
 ## Results
 
 \centering
-\includegraphics[page=1]{/Users/cjb60/Dropbox/comp523/assignment2/plots-neat.pdf}
-
-## Results
-
-\centering
 \includegraphics[page=2]{/Users/cjb60/Dropbox/comp523/assignment2/plots-neat.pdf}
 
 ## Results
@@ -150,10 +145,6 @@ header-includes:
 ## Results
 
 \includegraphics{/Users/cjb60/Dropbox/comp523/assignment2/mem-and-time.pdf}
-
-## Results
-
-\includegraphics{../images/profiling.png}
 
 ## Conclusion
 

@@ -37,7 +37,7 @@ public class ExamineGenerators {
 				throw new Exception("Unknown attr type: " + type);
 			}
 		}		
-		System.out.println( hdr.relationName() + " & " + numNumeric + " & " + numNominal + " & " + numClasses);
+		System.out.println( hdr.relationName() + " & " + numNumeric + " & " + (numNominal-1) + " & " + numClasses);
 	}
 	
 	public static void main(String[] args) throws Exception {

@@ -5,7 +5,7 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 /**
- * Class to convert an ARFF file into a "VW ARFF", which is simply
+ * Class to convert an ARFF file into a "meta ARFF", which is simply
  * an ARFF file with a string attribute (a VW instance, represented
  * as a string), and the class attribute from the original ARFF.
  * @author cjb60
