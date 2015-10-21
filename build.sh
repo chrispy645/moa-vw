@@ -1,7 +1,11 @@
 #!/bin/bash
 
+if [ -z "$MOA_HOME" ]; then
+	echo "MOA_HOME env variable is not set!"
+	exit 1
+fi
+
 ant clean
-#ant -noclasspath -lib $MOA_EXP_HOME/moa.jar:$WEKA_HOME/weka.jar exejar -Dpackage=moa-vw
 cd moa-modifications
 ./build.sh
 cd ..

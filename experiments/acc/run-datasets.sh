@@ -30,7 +30,7 @@ declare -a outputs=(
 )
 
 for i in {0..7}; do
-    java -Xmx6g -cp ../moa-modifications/src/main/java/:../dist/moa-vw.jar:$MOA_HOME/moa.jar \
+    java -Xmx6g -cp ../../moa-modifications/src/main/java/:../../dist/moa-vw.jar:$MOA_HOME/moa.jar \
     -javaagent:$MOA_HOME/sizeofag.jar moa.DoTask \
         "${configs[$i]}" > "${outputs[$i]}"
 done
@@ -57,7 +57,7 @@ for NUM_BITS in 3 6 9 12 15 18; do
         "output-datasets/vw_${NUM_BITS}_oaa_waveform.txt"
     )
     for i in {0..7}; do
-        java -Xmx6g -cp ../moa-modifications/src/main/java/:../dist/moa-vw.jar:$MOA_HOME/moa.jar \
+        java -Xmx6g -cp ../../moa-modifications/src/main/java/:../../dist/moa-vw.jar:$MOA_HOME/moa.jar \
         -javaagent:$MOA_HOME/sizeofag.jar moa.DoTask \
             "${configs[$i]}" > "${outputs[$i]}"
     done
