@@ -13,11 +13,12 @@ header-includes:
 ## VW
 
 * Online learning library written in C++
+    * JNI to interface with C++ code
 * Learn linear classifiers
     * f(x) = wx + b
     * Stochastic gradient descent
 * Large datasets with extremely large feature space
-* Utilises "hashing trick""
+* Utilises "hashing trick"
 
 ## Hashing trick
 
@@ -110,13 +111,6 @@ header-includes:
 \centering
 \includegraphics[page=2]{/Users/cjb60/Dropbox/comp523/assignment2/plots-neat.pdf}
 
-## Results
-
-* Generally, lower $b$ results in decreased accuracy (more collisions)
-* VW decomposes a multi-class problem into a set of binary ones
-    * More model capacity
-* Conclusion: the wrapper works!
-
 ## Caveats
 
 * MOA not suitable for extremely large number of features
@@ -140,7 +134,7 @@ header-includes:
 "-1 | x1:5.0 x2:8.5 x10:10.7 rainy windy","a"
 "1 | x5:0.5 x7:12.3 x8:9.0 sunny","b"
 ```
-* Measure memory/time with 100k attributes (50% always zero)
+* Measure memory/time with 100k attributes
 
 ## Results
 
@@ -148,7 +142,7 @@ header-includes:
 
 ## Conclusion
 
-* VW wrapper works, and it's fast
+* VW wrapper works
 * Meta ARFF is "hacky"
     * Pre-release MOA might have a solution to header issue
     * http://groups.google.com/forum/#!topic/moa-users/tV4biI1Q8QU]
